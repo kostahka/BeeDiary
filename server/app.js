@@ -1,33 +1,47 @@
 require('dotenv').config()
 
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const debug = require('debug')('server:server');
+const mongoose = require('mongoose')
+const cors = require('cors')
 
-
-const indexRouter = require('./routes/index');
+const apiaryRouter = require('./routes/apiary');
+const hiveRouter = require('./routes/hive');
 const usersRouter = require('./routes/users');
 
+const authMiddleware = require('./middlewares/auth-middleware')
+const errorMiddleware = require('./middlewares/error-middleware')
+
 const app = express();
+const port = normalizePort(process.env.PORT || '5000');
 
-
-app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors())
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api/apiary', authMiddleware, apiaryRouter);
+app.use('/api/hive', authMiddleware, hiveRouter);
+app.use('/api/users', usersRouter);
 
+app.use(errorMiddleware)
 
-const port = normalizePort(process.env.PORT || '3000');
-app.listen(port, onListening)
+const start = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+
+        app.listen(port, onListening)
+    }catch (e){
+        console.log(e)
+    }
+}
+
+start()
 
 function onListening() {
-    debug('Listening on ' + port);
+    console.log('Listening on ' + port);
 }
 
 function normalizePort(val) {
