@@ -10,23 +10,17 @@ import Register from "./pages/Register/Register";
 function App() {
   return (
     <div className="App">
-        <Header/>
       <BrowserRouter>
+          <Header/>
           <Routes>
               <Route path="/" element={<Home/>}/>
               <Route path="/apiaries" element={<ApiaryList/>}/>
-              <Route path="/apiary" element={<Apiary/>}/>
-              <Route path="/apiary/hive" element={<Hive/>}/>
+              <Route path="/apiary/:id" element={<Apiary/>}/>
+              <Route path="/apiary/hive/:id" element={<Hive/>}/>
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
           </Routes>
       </BrowserRouter>
-
-
-
-
-
-
     </div>
   );
 }

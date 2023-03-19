@@ -6,15 +6,15 @@ const UserDto = require('../dtos/user-dto')
 const ApiError = require('../exceptions/api-exception')
 
 class UserService{
-    async registration(nickname, password){
+    async registration(nickname, password, isAdmin){
         const candidate = await UserModel.findOne({nickname})
         if(candidate){
-            throw ApiError.BadRequest('User with nickname ' + nickname + 'is already exists')
+            throw ApiError.BadRequest('User with nickname ' + nickname + ' is already exists')
         }
 
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, salt)
-        const user = await UserModel.create({nickname, hashPassword})
+        const user = await UserModel.create({nickname, password: hashPassword, isAdmin})
 
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
