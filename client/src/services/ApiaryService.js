@@ -5,7 +5,7 @@ export default class ApiaryService{
         return await api.get('/apiary/getAll/' + user?.nickname)
     }
     static async addApiary(user, name){
-        return await api.post('/apiary/add/' + user?.nickname, {name})
+        return await api.put('/apiary/add/' + user?.nickname, {name})
     }
     static async fetchApiary(id){
         return await api.get('/apiary/get/' + id)
@@ -14,6 +14,6 @@ export default class ApiaryService{
         return await api.post('/apiary/set/' + id, {name})
     }
     static async deleteApiary(id){
-        return await api.post('/apiary/delete/' + id)
+        return await api.delete('/apiary/delete/' + id)
     }
 }

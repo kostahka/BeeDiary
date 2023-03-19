@@ -7,7 +7,8 @@ router.get('/getAll/:nickname', apiaryController.getApiaries)
 router.get('/get/:id', apiaryController.getApiary)
 router.post('/set/:id',
     body('name').notEmpty({ignore_whitespace:true}), apiaryController.setApiary)
-router.post('/add/:nickname',
+router.put('/add/:nickname',
     body('name').notEmpty({ignore_whitespace:true}) ,apiaryController.addApiary)
-router.post('/delete/:id', apiaryController.deleteApiary)
+router.delete('/delete/:id', apiaryController.deleteApiary)
+
 module.exports = router;

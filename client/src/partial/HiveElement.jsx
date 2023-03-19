@@ -6,7 +6,7 @@ import HiveService from "../services/HiveService";
 
 function HiveElement(props) {
     return (
-        <div className="col m-2">
+        <div className="col mb-2">
             <Link to={"/apiary/hive/" + props.hive._id}>
                 <button className="btn btn-dark btn-outline-warning w-100">
                     <div className="d-flex flex-column justify-content-center align-items-center">

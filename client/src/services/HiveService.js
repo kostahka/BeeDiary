@@ -5,12 +5,12 @@ export default class HiveService{
         return await api.get('/hive/get/' + id)
     }
     static async addHives(id, count){
-        return await api.post('/hive/add/' + id, {count})
+        return await api.put('/hive/add/' + id, {count})
     }
     static async setHive(hive){
         return await api.post('/hive/set', {hive})
     }
     static async deleteHive(id){
-        return await api.post('/hive/delete/' + id)
+        return await api.delete('/hive/delete/' + id)
     }
 }
