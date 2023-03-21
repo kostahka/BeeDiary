@@ -1,10 +1,12 @@
 import React, {useContext} from 'react';
 import {AuthContext} from "../contexts/AuthContext";
 import AuthService from "../services/AuthService";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 function Header(props) {
     const {user, dispatch} = useContext(AuthContext)
+
+    const navigate = useNavigate()
 
     const handleClick = async (e)=>{
         e.preventDefault()
@@ -14,6 +16,8 @@ function Header(props) {
             await AuthService.logout()
         }catch (e) {
             console.log(e)
+        }finally {
+            navigate("/login")
         }
     }
 
@@ -33,7 +37,15 @@ function Header(props) {
 
                 <div className="col-md-2 text-end">
                     {user ?
-                        (<button onClick={handleClick} className="btn btn-outline-warning">Logout</button>)
+                        (<div className="d-flex flex-row align-items-center justify-content-end">
+                            <div className="d-flex flex-column align-items-center">
+                                <span className="text-warning h3">{user.nickname}</span>
+                                <button onClick={handleClick} className="btn btn-outline-warning">Logout</button>
+                            </div>
+
+
+                            <img src="/images/beeKeeper.png"/>
+                        </div>)
                         :
                         (
                             <div className="input-group">

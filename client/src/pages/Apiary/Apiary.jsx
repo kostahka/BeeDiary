@@ -57,6 +57,7 @@ function Apiary(props) {
             }
             case "set": {
                 const res = await ApiaryService.setApiary(id, name)
+                fetchApiary("fetch")
                 break
             }
             case "add": {
@@ -78,22 +79,29 @@ function Apiary(props) {
 
     return (
         <div className="container-fluid">
-            <div className="container bg-dark p-5 mb-5 d-flex flex-column align-items-center">
+            <div className="container bg-dark p-5 mb-5 d-flex flex-column align-items-center
+            rounded-5 border border-secondary">
+                <span className="text-warning h2 mb-3">Apiary: {apiary.name}</span>
                 <div className="d-flex flex-row justify-content-start w-100">
                     <div className="d-flex flex-column justify-content-start align-items-center w-100 mx-3">
-                        <div className="input-group mb-2">
-                            <span className="input-group-text">Name</span>
-                            <input type="text" className="form-control" value={name} onChange={handleApiaryChange}/>
+                        <div className="form-floating mb-2 w-100">
+                            <input type="text" className="form-control"
+                                   value={name} onChange={handleApiaryChange}
+                                    placeholder="Name"/>
+                            <label className="form-label">Name</label>
                         </div>
                         <button className="btn btn-outline-warning w-100 mb-2" onClick={handleApiaryClick}>Save</button>
                         <button className="btn btn-outline-danger w-100" onClick={handleDeleteClick}>Delete</button>
                     </div>
                     <div className="d-flex flex-column justify-content-start align-items-center w-100">
-                        <div className="input-group row-cols-3">
-                            <span className="input-group-text bg-dark text-warning border-warning col-2">Count</span>
-                            <input type="number" className="form-control col-1" value={count} onChange={handleHiveChange}/>
+                        <div className="input-group">
+                            <div className="form-floating">
+                                <input type="number" min="1" className="form-control col-1" value={count} onChange={handleHiveChange}/>
+                                <label className="form-label">Count</label>
+                            </div>
                             <button className="btn btn-warning col-5" onClick={handleHiveClick}>Add hives</button>
                         </div>
+
                     </div>
                 </div>
 

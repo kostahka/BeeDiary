@@ -31,7 +31,8 @@ function Login(props) {
 
     return (
         <div>
-            <div className="container bg-dark d-flex flex-column p-5 w-50 align-items-center">
+            <div className="container bg-dark d-flex flex-column p-5 w-50 align-items-center
+            rounded-5 border border-secondary">
                 <div className="w-100">
                     <div className="input-group mb-2">
                         <span className="input-group-text">Nickname</span>

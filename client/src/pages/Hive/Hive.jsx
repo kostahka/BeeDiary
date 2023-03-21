@@ -93,44 +93,59 @@ function Hive(props) {
 
     return (
         <div>
-            <div className="container bg-dark p-5 d-flex flex-column align-items-center">
+            <div className="container bg-dark p-5 d-flex flex-column align-items-center
+            rounded-5 border border-secondary">
 
                 <span className="text-warning h2 mb-4">Number #{hive.number}</span>
 
-                <div className="input-group mb-3 row-cols-3">
-                    <div className="input-group-text bg-dark border-warning col-1 d-flex justify-content-center">
-                        <img style={{height: "50px", width:"auto"}} src="/images/beeFrame.png"/>
+                <div className="input-group mb-3 row-cols-2">
+                    <div className="input-group-text bg-dark border-warning col-1
+                    d-flex justify-content-center">
+                        <img style={{height: "5vh", width:"auto"}}
+                             src="/images/beeFrame.png"/>
                     </div>
-                    <span className="input-group-text col-2">Hive type</span>
-                    <Select
-                        onChange={handleTypeChange}
-                        options={typeOptions}
-                        value={hive.type}
-                    />
+                    <div className="form-floating col">
+                        <Select
+                            onChange={handleTypeChange}
+                            options={typeOptions}
+                            value={hive.type}
+                        />
+                        <label className="form-label">Hive type</label>
+                    </div>
                 </div>
 
 
-                <div className="input-group mb-3 row-cols-3">
-                    <div className="input-group-text bg-dark border-warning col-1 d-flex justify-content-center">
-                        <img style={{height: "50px", width:"auto"}} src="/images/beeQueen.png"/>
+                <div className="mb-3 input-group row-cols-2">
+                    <div className="input-group-text bg-dark border-warning col-1
+                    d-flex justify-content-center">
+                        <img style={{height: "5vh", width:"auto"}}
+                             src="/images/beeQueen.png"/>
                     </div>
-                    <span className="input-group-text col-2">Queen</span>
-                    <Select
-                        onChange={handleQueenChange}
-                        options={queenOptions}
-                        value={hive.queen}
-                        other
-                    />
+                    <div className="form-floating col">
+                        <Select
+                            onChange={handleQueenChange}
+                            options={queenOptions}
+                            value={hive.queen}
+                            other
+                        />
+                        <label className="form-label">Queen</label>
+                    </div>
                 </div>
 
-                <div className="input-group row-cols-3">
-                    <div className="input-group-text bg-dark border-warning col-1 d-flex justify-content-center">
-                        <img style={{height: "50px", width:"auto"}} src="/images/swarmOfBees.png"/>
+                <div className="input-group row">
+                    <div className="input-group-text bg-dark border-warning col-1
+                    d-flex justify-content-center">
+                        <img style={{height: "5vh", width:"auto"}}
+                             src="/images/swarmOfBees.png"/>
                     </div>
-                    <label className="input-group-text border-warning col-2">Performance</label>
-                    <div className="input-group-text form-control bg-dark col">
-                        <input value={hive.performance} onChange={handlePerformanceChange} type="range" className=" form-range mb-2" min="0" max="100"/>
+
+                    <div className="form-control bg-dark border-warning col">
+                        <label className="form-label text-warning border-warning">
+                            Performance: {hive.performance}%</label>
+                        <input value={hive.performance} onChange={handlePerformanceChange} type="range"
+                               className=" form-range mb-2" min="0" max="100" />
                     </div>
+
                 </div>
 
                 <div className="input-group mt-5 row-cols-2 mb-2">

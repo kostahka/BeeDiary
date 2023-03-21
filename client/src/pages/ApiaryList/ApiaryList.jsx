@@ -3,8 +3,6 @@ import ApiaryElement from "../../partial/ApiaryElement";
 import {useFetching} from "../../hooks/useFetching";
 import ApiaryService from "../../services/ApiaryService";
 import {AuthContext} from "../../contexts/AuthContext";
-import {useNavigate} from "react-router-dom";
-import AuthService from "../../services/AuthService";
 
 function ApiaryList(props) {
     const [apiaryName, setApiaryName] = useState('')
@@ -44,12 +42,13 @@ function ApiaryList(props) {
 
     return (
         <div className="container-fluid">
-            <div className="container bg-dark p-5 mb-5 d-flex flex-column justify-content-start align-items-center">
+            <div className="container bg-dark p-5 mb-5 d-flex flex-column justify-content-start
+            align-items-center rounded-5 border border-secondary">
                 <span className="text-warning text-center mb-4 h4">New apiary</span>
                 <div className="d-flex flex-column w-100">
-                    <div className="input-group mb-2">
-                        <span className="input-group-text bg-dark text-warning border-warning">Apiary name</span>
-                        <input type="text" className="form-control" onChange={handleChange}/>
+                    <div className="form-floating mb-3">
+                        <input type="text" className="form-control" placeholder="name" onChange={handleChange}/>
+                        <label className="form-label">Name of new apiary</label>
                     </div>
 
                     <button className="btn btn-outline-warning" onClick={handleClick}>Add apiary</button>
