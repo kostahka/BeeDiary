@@ -33,6 +33,7 @@ function Header(props) {
                 <ul className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                     <li><Link to="/" className="nav-link px-2 link-warning">Home</Link></li>
                     <li><Link to="/apiaries" className="nav-link px-2 link-light">Apiaries</Link></li>
+                    <li><Link to="/users" className="nav-link px-2 link-light">Users</Link></li>
                 </ul>
 
                 <div className="col-md-2 text-end">

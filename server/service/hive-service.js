@@ -22,7 +22,7 @@ class HiveService{
     async add(id, count){
         const hives = []
         for(let i = 0; i < count; i++){
-            const hive = await hiveModel.create({type: "None", queen: "None", performance: 0, apiary_id:id})
+            const hive = await hiveModel.create({type: "None", queen: "None", performance: 0, apiaryId:id})
             hives.push(hive)
         }
         return hives

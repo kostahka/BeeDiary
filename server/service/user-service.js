@@ -1,4 +1,3 @@
-
 const UserModel = require('../models/user-model')
 const bcrypt = require('bcrypt')
 const tokenService = require('../service/token-service')
@@ -6,6 +5,20 @@ const UserDto = require('../dtos/user-dto')
 const ApiError = require('../exceptions/api-exception')
 
 class UserService{
+    async getUser(id){
+        const user = await UserModel.findOne({_id: id})
+        return new UserDto(user);
+    }
+    async getUsersCount(nicknameFilter){
+        const count = await UserModel.count({nickname: {$regex:nicknameFilter}});
+        return count;
+    }
+    async getUsers(nicknameFilter, page, inPageCount){
+        nicknameFilter = nicknameFilter? nicknameFilter : "";
+        const users = await UserModel.find({nickname: {$regex:nicknameFilter}}).skip((page - 1) * inPageCount).limit(inPageCount);
+        return users.map(u => new UserDto(u))
+    }
+
     async registration(nickname, password, isAdmin){
         const candidate = await UserModel.findOne({nickname})
         if(candidate){

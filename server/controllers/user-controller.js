@@ -3,6 +3,34 @@ const {validationResult} = require('express-validator')
 const ApiError = require('../exceptions/api-exception')
 
 class UserController{
+    async getUser(req, res, next){
+        try{
+            const {id} = req.params
+            const user = await userService.getUser(id)
+            return res.json(user)
+        }catch (e){
+            next(e)
+        }
+    }
+    async getUsersCount(req, res, next){
+        try{
+            const {nicknameFilter} = req.query;
+            const count = await userService.getUsersCount(nicknameFilter);
+            return res.json(count)
+        }catch (e){
+            next(e)
+        }
+    }
+    async getUsers(req, res, next){
+        try{
+            const { nicknameFilter, page, inPageCount } = req.query;
+
+            const usersData = await userService.getUsers(nicknameFilter, page, inPageCount);
+            return res.json(usersData)
+        }catch (e){
+            next(e)
+        }
+    }
     async registration(req, res, next){
         try{
             const errors = validationResult(req)

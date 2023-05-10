@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose')
 const cors = require('cors')
 
+const taskRouter = require('./routes/task');
+const groupRouter = require('./routes/group');
 const apiaryRouter = require('./routes/apiary');
 const hiveRouter = require('./routes/hive');
 const usersRouter = require('./routes/users');
@@ -22,6 +24,8 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }))
 
+app.use('/api/task', authMiddleware, taskRouter);
+app.use('/api/group', authMiddleware, groupRouter);
 app.use('/api/apiary', authMiddleware, apiaryRouter);
 app.use('/api/hive', authMiddleware, hiveRouter);
 app.use('/api/users', usersRouter);

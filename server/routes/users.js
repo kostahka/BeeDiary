@@ -11,4 +11,8 @@ router.post('/registration',
 router.post('/logout', userController.logout)
 router.get('/refresh', userController.refresh)
 
+router.get('/getAll', userController.getUsers)
+router.get('/getCount', userController.getUsersCount)
+router.get('/get/:id', userController.getUser)
+
 module.exports = router;

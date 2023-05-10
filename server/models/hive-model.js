@@ -4,7 +4,7 @@ const HiveSchema = new Schema({
     type: {type: String, required: true},
     queen: {type: String, required: true},
     performance: {type: Schema.Types.Number, required: true},
-    apiary_id: {type: Schema.Types.ObjectId, ref: 'Apiary'},
+    apiaryId: {type: Schema.Types.ObjectId, ref: 'Apiary'},
     number: {type:  Schema.Types.Number}
 })
 

@@ -1,4 +1,6 @@
 const apiaryService = require('../service/apiary-service')
+const {validationResult} = require("express-validator");
+const ApiError = require("../exceptions/api-exception");
 
 class ApiaryController{
     async getApiaries(req, res, next){
@@ -21,9 +23,14 @@ class ApiaryController{
     }
     async setApiary(req, res, next){
         try{
+            const errors = validationResult(req)
+            if(!errors.isEmpty()){
+                return next(ApiError.BadRequest('Validation error', errors.array()))
+            }
             const {id} = req.params
             const {name} = req.body
-            const apiary = await apiaryService.set(id, name)
+            const ownUserId = req.user.id;
+            const apiary = await apiaryService.set(ownUserId, id, name)
             return res.json(apiary)
         }catch (e){
             next(e)
@@ -31,6 +38,10 @@ class ApiaryController{
     }
     async addApiary(req, res, next){
         try{
+            const errors = validationResult(req)
+            if(!errors.isEmpty()){
+                return next(ApiError.BadRequest('Validation error', errors.array()))
+            }
             const {nickname} = req.params
             const {name} = req.body
             const apiary = await apiaryService.add(nickname, name)
@@ -42,7 +53,8 @@ class ApiaryController{
     async deleteApiary(req, res, next){
         try{
             const {id} = req.params
-            const apiaryData = await apiaryService.delete(id)
+            const ownUserId = req.user.id;
+            const apiaryData = await apiaryService.delete(ownUserId, id)
             return res.json(apiaryData)
         }catch (e){
             next(e)

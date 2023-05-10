@@ -6,6 +6,8 @@ import Header from "./partial/Header";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import UserList from "./pages/UserList/UserList";
+import User from "./pages/User/User";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
               <Route path="/apiary/hive/:id" element={<Hive/>}/>
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
+              <Route path="/users" element={<UserList/>}/>
+              <Route path="/user/:id" element={<User/>}/>
           </Routes>
       </BrowserRouter>
     </div>
