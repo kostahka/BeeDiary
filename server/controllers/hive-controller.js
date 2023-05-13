@@ -33,7 +33,8 @@ class HiveController{
     async deleteHive(req, res, next){
         try{
             const {id} = req.params
-            const hiveData = await hiveService.delete(id)
+            const ownUserId = req.user.id;
+            const hiveData = await hiveService.delete(ownUserId, id)
             return res.json(hiveData)
         }catch (e){
             next(e)

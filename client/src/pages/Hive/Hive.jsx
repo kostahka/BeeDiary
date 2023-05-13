@@ -4,8 +4,12 @@ import {useFetching} from "../../hooks/useFetching";
 import HiveService from "../../services/HiveService";
 import {AuthContext} from "../../contexts/AuthContext";
 import Select from "../../components/Select";
+import ApiaryService from "../../services/ApiaryService";
+import TaskService from "../../services/TaskService";
+import TaskElement from "../../partial/TaskElement";
 
 function Hive(props) {
+    const {user} = useContext(AuthContext)
 
     const typeOptions = [
         {value:"Vertical"},
@@ -28,12 +32,20 @@ function Hive(props) {
         type: "",
         queen: "",
         performance: 0,
-        apiary_id: ""
+        apiaryId: ""
     })
+    const [apiary, setApiary] = useState({
+        _id: null,
+        name: "",
+        hives: []
+    })
+
+    const [tasks, setTasks] = useState([])
+    const [taskText, setTaskText] = useState("")
 
     const navigate = useNavigate()
 
-    const [fetchHive, isLoading, error] = useFetching(async (type) =>{
+    const [fetchHive, isLoading, error] = useFetching(async (type, someId, someData) =>{
         switch (type){
             case "fetch":
             {
@@ -53,9 +65,31 @@ function Hive(props) {
                 navigate(-1)
                 break
             }
+            case "fetchApiary":
+            {
+                const res = await ApiaryService.fetchApiary(hive.apiaryId)
+                setApiary(res.data)
+                break
+            }
+            case "fetchTasks":
+            {
+                const res = await TaskService.fetchTasks(hive._id)
+                setTasks(res.data)
+                break
+            }
+            case "addTask":
+            {
+                const res = await TaskService.addTask(hive._id, taskText)
+                setTaskText("")
+                fetchHive("fetchTasks")
+                break
+            }
         }
-
     })
+
+    const handleDeleteTask = () => {
+        fetchHive("fetchTasks")
+    }
 
     const handlePerformanceChange = (e) => {
         setHive(prev => ({...prev, performance: e.target.value}))
@@ -87,12 +121,58 @@ function Hive(props) {
         fetchHive("delete")
     }
 
+    const handleAddTask = (e) => {
+        e.preventDefault()
+
+        fetchHive("addTask")
+    }
+
+    const handleChangeTaskText = (e) => {
+        setTaskText(e.target.value)
+    }
+
     useEffect(()=>{
         fetchHive("fetch")
     }, [])
 
+    useEffect(()=>{
+        if(hive._id)
+        {
+            fetchHive("fetchTasks")
+            fetchHive("fetchApiary")
+        }
+    }, [hive])
+
     return (
         <div>
+
+            <div className="modal fade" id="modalAddTask" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                                Add task
+                            </h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="input-group">
+                                <span className="input-group-text">Task text</span>
+                                <textarea className="form-control" onChange={handleChangeTaskText}></textarea>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" className="btn btn-warning" data-bs-dismiss="modal"
+                                    onClick={handleAddTask}>Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div className="container bg-dark p-5 d-flex flex-column align-items-center
             rounded-5 border border-secondary">
 
@@ -152,7 +232,8 @@ function Hive(props) {
                     <button onClick={handleCancelClick} className="btn btn-outline-secondary">Cancel</button>
                     <button onClick={handleSaveClick} className="btn btn-warning">Save</button>
                 </div>
-                <button onClick={handleDeleteClick} className="btn btn-outline-danger w-100">Delete</button>
+                <button onClick={handleDeleteClick} className="btn btn-outline-danger w-100"
+                        disabled={apiary.userId !== user.id}>Delete</button>
                 <div className="spinner-grow text-warning mt-4" role="status"
                      style={{visibility: !isLoading?"hidden":"visible"}}>
                     <span className="visually-hidden">Loading...</span>
@@ -161,6 +242,21 @@ function Hive(props) {
                     <div className="border border-danger border rounded-4 p-2 px-4 mt-2">
                         <span className="text-danger text-center h3">{error.message}</span>
                     </div>}
+            </div>
+            <div className="d-flex flex-column align-items-center my-4 bg-dark container rounded-4">
+                <span className="text-warning h2 mb-4">Tasks</span>
+                <div className="d-flex flex-column align-items-center border border-1 border-warning rounded-4 container">
+                    {
+                        !tasks.length && <span className="text-warning h4">No tasks</span>
+                    }
+                    {
+                        tasks.map(task =>
+                            <TaskElement key={task._id} handleDelete={handleDeleteTask} task={task}/>
+                        )
+                    }
+                </div>
+                <button className="btn btn-outline-warning my-4"
+                        data-bs-toggle="modal" data-bs-target="#modalAddTask">+</button>
             </div>
         </div>
     );

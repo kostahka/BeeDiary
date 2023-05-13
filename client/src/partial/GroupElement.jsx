@@ -1,14 +1,14 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-function UserElement(props) {
+function GroupElement(props) {
     return (
         <div className="col mb-2">
-            <Link to={"/user/" + props.user.id}>
+            <Link to={"/group/" + props.group._id}>
                 <button className="btn btn-dark btn-outline-warning w-100">
                     <div className="d-flex flex-column justify-content-center align-items-center">
-                        <img src="/images/beeKeeper.png"/>
-                        <span>{props.user.nickname}</span>
+                        <img src="/images/beeKeepers.png"/>
+                        <span>{props.group.name}</span>
                     </div>
                 </button>
             </Link>
@@ -16,4 +16,4 @@ function UserElement(props) {
     );
 }
 
-export default UserElement;
+export default GroupElement;

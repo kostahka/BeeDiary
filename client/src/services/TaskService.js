@@ -2,7 +2,7 @@ import api from "../http";
 
 export default class TaskService{
     static async addTask(hiveId, text){
-        return await api.put('/task/add/' + hiveId)
+        return await api.put('/task/add/' + hiveId, {text})
     }
     static async fetchApiaryTasks(apiaryId){
         return await api.get('/task/getApiaryAll/' + apiaryId)

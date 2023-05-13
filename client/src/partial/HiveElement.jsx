@@ -10,7 +10,7 @@ function HiveElement(props) {
             <Link to={"/apiary/hive/" + props.hive._id}>
                 <button className="btn btn-dark btn-outline-warning w-100">
                     <div className="d-flex  flex-column justify-content-center align-items-center">
-                        <img src="../images/hive.png"/>
+                        <img src="/images/hive.png"/>
                         <span className="border-bottom border-warning rounded-4
                         w-100">Number #{props.hive.number}</span>
                         <div className="container d-flex flex-column align-items-center border-top

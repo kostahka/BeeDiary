@@ -3,8 +3,40 @@ const bcrypt = require('bcrypt')
 const tokenService = require('../service/token-service')
 const UserDto = require('../dtos/user-dto')
 const ApiError = require('../exceptions/api-exception')
+const groupModel = require('../models/group-model')
 
 class UserService{
+    async removeAllowedApiary(userId, apiaryId){
+        const user = await UserModel.findById({userId})
+        if(!user){
+            throw ApiError.BadRequest('No such user')
+        }
+        
+        const userData = await UserModel.findByIdAndUpdate(userId, {$addToSet: {allowedApiaries: apiaryId}});
+        return userData
+    }
+    async addAllowedApiary(userId, apiaryId){
+        const user = await UserModel.findById({userId})
+        if(!user){
+            throw ApiError.BadRequest('No such user')
+        }
+
+        const userData = await UserModel.findByIdAndUpdate(userId, {$addToSet: {allowedApiaries: apiaryId}});
+        return userData
+    }
+    async getGroupUsers(groupId){
+        const groupData = await groupModel.findById(groupId)
+
+        let users = []
+        for(const userId of groupData.users){
+            const userData = await UserModel.findById(userId)
+            users.push(new UserDto(userData))
+        }
+
+        const user = await UserModel.findById(groupData.userId)
+        users = [...users, new UserDto(user)]
+        return users;
+    }
     async getUser(id){
         const user = await UserModel.findOne({_id: id})
         return new UserDto(user);

@@ -1,5 +1,6 @@
 const hiveModel = require('../models/hive-model')
 const ApiError = require('../exceptions/api-exception')
+const apiaryService = require('../service/apiary-service')
 
 class HiveService{
     async get(id){
@@ -27,7 +28,15 @@ class HiveService{
         }
         return hives
     }
-    async delete(id){
+    async delete(userId, id){
+        const hive = await hiveModel.findById(id)
+        if(!hive){
+            throw ApiError.BadRequest('No such hive')
+        }
+        if(!await apiaryService.isOwnApiary(userId, hive._id))
+        {
+            throw ApiError.BadRequest('Incorrect user')
+        }
         const hiveData = await hiveModel.findByIdAndDelete(id)
         return hiveData
     }

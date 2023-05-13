@@ -19,6 +19,9 @@ export default class GroupService{
     static async fetchUserGroups(userId){
         return await api.get('/group/getAll/' + userId)
     }
+    static async fetchUserOwnGroups(userId){
+        return await api.get('/group/getUserAll/' + userId)
+    }
     static async setGroup(id, name){
         return await api.post('/group/set/' + id ,{name})
     }

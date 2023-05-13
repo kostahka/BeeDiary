@@ -1,9 +1,8 @@
-const groupModel = require('../models/group-model')
 const ApiError = require('../exceptions/api-exception')
-const userModel = require('../models/user-model')
 const apiaryModel = require('../models/apiary-model')
 const taskModel = require('../models/task-model')
 const hiveModel = require('../models/hive-model')
+const TaskDto = require('../dtos/task-dto')
 
 class TaskService{
     async add(hiveId, text){
@@ -12,7 +11,7 @@ class TaskService{
             throw ApiError.BadRequest('No such hive')
         }
 
-        return await taskModel.create({text, isCompleted: false, hiveId})
+        return await taskModel.create({text: text, isCompleted: false, hiveId})
     }
     async getApiaryTasks(apiaryId){
         const apiaryData = await apiaryModel.findById(apiaryId)
@@ -23,10 +22,14 @@ class TaskService{
         const hivesData = await hiveModel.find({apiaryId})
 
         let tasksData = []
-        await hivesData.forEach(async hiveData => {
+
+        for (const hiveData of hivesData) {
             const subtasksData = await taskModel.find({hiveId: hiveData._id})
-            tasksData = [...tasksData, ...subtasksData]
-        })
+            for(let taskData of subtasksData){
+                const task = new TaskDto(taskData, hiveData)
+                tasksData.push(task)
+            }
+        }
 
         return tasksData
     }

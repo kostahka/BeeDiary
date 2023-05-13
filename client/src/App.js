@@ -8,6 +8,8 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import UserList from "./pages/UserList/UserList";
 import User from "./pages/User/User";
+import GroupList from "./pages/GroupList/GroupList";
+import Group from "./pages/Group/Group";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Header/>
           <Routes>
               <Route path="/" element={<Home/>}/>
+              <Route path="/groups" element={<GroupList/>}/>
+              <Route path="/group/:id" element={<Group/>}/>
               <Route path="/apiaries" element={<ApiaryList/>}/>
               <Route path="/apiary/:id" element={<Apiary/>}/>
               <Route path="/apiary/hive/:id" element={<Hive/>}/>

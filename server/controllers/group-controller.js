@@ -3,6 +3,15 @@ const {validationResult} = require("express-validator");
 const ApiError = require("../exceptions/api-exception");
 
 class GroupController{
+    async getUserOwnGroups(req, res, next){
+        try{
+            const {id} = req.params
+            const groupsData = await groupService.getUserOwnGroups(id)
+            return res.json(groupsData)
+        }catch (e){
+            next(e)
+        }
+    }
     async getUserGroups(req, res, next){
         try{
             const {id} = req.params

@@ -3,6 +3,37 @@ const {validationResult} = require("express-validator");
 const ApiError = require("../exceptions/api-exception");
 
 class ApiaryController{
+    async addAllowedUser(req, res, next){
+        try{
+            const {id} = req.params
+            const {userId} = req.body
+            const ownUserId = req.user.id;
+            const apiary = await apiaryService.addAllowedUser(ownUserId, userId, id)
+            return res.json(apiary)
+        }catch (e){
+            next(e)
+        }
+    }
+    async removeAllowedUser(req, res, next){
+        try{
+            const {id} = req.params
+            const {userId} = req.body
+            const ownUserId = req.user.id;
+            const apiary = await apiaryService.removeFromAllowedUser(ownUserId, userId, id)
+            return res.json(apiary)
+        }catch (e){
+            next(e)
+        }
+    }
+    async getUserOwnApiaries(req, res, next){
+        try{
+            const {id} = req.params
+            const apiaries = await apiaryService.getUserOwnApiaries(id)
+            return res.json(apiaries)
+        }catch (e){
+            next(e)
+        }
+    }
     async getApiaries(req, res, next){
         try{
             const {nickname} = req.params

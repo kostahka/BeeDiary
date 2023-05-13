@@ -3,12 +3,24 @@ const ApiError = require('../exceptions/api-exception')
 const userModel = require('../models/user-model')
 const apiaryModel = require('../models/apiary-model')
 const apiaryService = require('../service/apiary-service')
+const userService = require('../service/user-service')
+const GroupDto = require('../dtos/group-dto')
 
 class GroupService{
     async isOwnGroup(userId, groupId)
     {
         const groupData = await groupModel.findById(groupId)
-        return groupData.userId === userId;
+
+        return groupData.userId == userId;
+    }
+    async getUserOwnGroups(userId){
+        const userData = await userModel.findById(userId)
+        if(!userData){
+            throw ApiError.BadRequest('Incorrect user')
+        }
+
+        const groupsData = await groupModel.find({userId})
+        return groupsData
     }
     async getUserGroups(userId){
         const userData = await userModel.findById(userId)
@@ -17,10 +29,14 @@ class GroupService{
         }
 
         let groupsData = [];
-        await userData.groups.forEach(async groupId => {
+
+        for (const groupId of userData.groups) {
             const groupData = await groupModel.findById(groupId)
             groupsData.push(groupData)
-        })
+        }
+
+        const groupData = await groupModel.find({userId})
+        groupsData = [...groupsData, ...groupData]
         return groupsData
     }
     async remove_allowed_apiary(userId, groupId, apiaryId)
@@ -30,7 +46,8 @@ class GroupService{
             throw ApiError.BadRequest('No such apiary')
         }
 
-        if(!await apiaryService.isOwnApiary(userId, apiaryId))
+        if(!await apiaryService.isOwnApiary(userId, apiaryId)
+            && !await this.isOwnGroup(userId, groupId))
         {
             throw ApiError.BadRequest('Incorrect user')
         }
@@ -50,18 +67,14 @@ class GroupService{
             throw ApiError.BadRequest('Incorrect user')
         }
 
-        const groupData = this.get(groupId)
+        const groupData = await groupModel.findByIdAndUpdate(groupId, {$addToSet: {allowedApiaries: apiaryId}})
 
-        if(!groupData.allowedApiaries)
-            groupData.allowedApiaries = [];
-        groupData.allowedApiaries = [...groupData.allowedApiaries, apiaryId];
-
-        return groupData.save();
+        return groupData;
     }
 
     async remove_user(ownUserId, groupId, userId)
     {
-        const userData = await userModel.findOne({_id: userId})
+        const userData = await userModel.findById(userId)
         if(!userData){
             throw ApiError.BadRequest('Incorrect user')
         }
@@ -71,12 +84,14 @@ class GroupService{
             throw ApiError.BadRequest('Incorrect user')
         }
 
-        const groupsData = await groupModel.updateMany({_id: groupId}, {$pull: {users: userId}})
+        const usersData = await userModel.findByIdAndUpdate(userId, {$pull: {groups: groupId}})
+
+        const groupsData = await groupModel.findByIdAndUpdate(groupId, {$pull: {users: userId}})
     }
 
     async add_user(ownUserId, groupId, userId)
     {
-        const userData = await userModel.findOne({_id: userId})
+        const userData = await userModel.findById(userId)
         if(!userData){
             throw ApiError.BadRequest('Incorrect user')
         }
@@ -86,17 +101,11 @@ class GroupService{
             throw ApiError.BadRequest('Incorrect user')
         }
 
-        const groupData = this.get(groupId)
+        const groupData = await groupModel.findByIdAndUpdate(groupId, {$addToSet: {users: userId}})
 
-        if(!groupData.users)
-            groupData.users = [];
-        groupData.users = [...groupData.users, userId];
+        const usData = await userModel.findByIdAndUpdate(userId, {$addToSet: {groups: groupId}})
 
-        if(!userData.groups)
-            userData.groups = [];
-        userData.groups = [...userData.groups, groupId];
-
-        return groupData.save();
+        return groupData;
     }
 
     async add(id, name){
@@ -112,10 +121,22 @@ class GroupService{
         if(!groupData){
             throw ApiError.BadRequest('No such group')
         }
-        return groupData
+        const usersData = await userService.getGroupUsers(id)
+
+        let apiaries = []
+        for (const apiaryId of groupData.allowedApiaries) {
+            const apiaryData = await apiaryModel.findById(apiaryId)
+            apiaries.push(apiaryData)
+        }
+
+        let group = new GroupDto(groupData)
+
+        group.users = usersData
+        group.allowedApiaries = apiaries
+        return group
     }
     async set(ownUserId, id, name) {
-        const groupData = await groupModel.findOne({_id: id})
+        const groupData = await groupModel.findById(id)
         if(!groupData){
             throw ApiError.BadRequest('No such group')
         }

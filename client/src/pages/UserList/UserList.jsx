@@ -74,28 +74,29 @@ function UserList(props) {
                         <span className="text-danger text-center h3">{error.message}</span>
                     </div>}
             </div>
-            <div className="row row-cols-3">
-                {users.map((user)=>
-                    <UserElement key={user.id} user={user}/>
-                )}
-
-            </div>
             <div className="bg-dark border border-1 border-warning d-flex justify-content-center
-            align-items-center">
+            align-items-center mb-3">
                 {
                     usersCount &&
                     Array.from({length: Math.floor((usersCount-1)/inPageCount) + 1},
                         (_, i) => i + 1)
                         .map((page)=>{
-                        return (<button key={page} id={page} onClick={handleChangePage} className="btn btn-outline-warning m-2">
-                            {page}
-                        </button>)
-                    })
+                            return (<button key={page} id={page} onClick={handleChangePage} className="btn btn-outline-warning m-2">
+                                {page}
+                            </button>)
+                        })
                 }
                 {
                     !usersCount && <span className="text-warning h3">Cannot find</span>
                 }
             </div>
+
+            <div className="row row-cols-3">
+                {users.map((user)=>
+                    <UserElement key={user.id} user={user}/>
+                )}
+            </div>
+
         </div>
     );
 }
